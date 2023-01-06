@@ -60,14 +60,14 @@ sorting=ynt
 
 \linespread{1.5}
 
-\title{A short note on distance measures and outlier robustness}
+\title{Summary: Outlier Robustness}
 \begin{document}
 \maketitle
 
 %Given a finite point cloud $X\subset\R^d$, we are interested in capturing how the removal (or addition) of an outlier point affects the persistent homology module. Suppose $x_0\in X$ and write $X_0 = X\setminus\{x_0\}$. The classical stability results in Topological Data Analysis (TDA) provide stability with respect to the Hausdorff distance. That is, the interleaving distance between the Čech homology groups of $X$ and $Y$ are bounded by the distance $d_H(X,Y)$. This guarantees stability with respect to small permutation of the point cloud. But adding a single point can move us far away from the initial point cloud, and consequently, classical stability does not help much with outlier robustness. Several alternative constructions have been proposed to deal with this problem. These includes \todo{add references} ...
 
 \begin{abstract}
-	This note is an attempt to summarise some of the articles and constructions we have been looking at in previous meetings. I will also try to summarise what kind of outlier robustness (leave-one-out stability) these methods enjoy.
+	This note is an attempt to summarise some of the articles and constructions we have been looking at in previous meetings. I will also try to summarise what kind of outlier robustness (leave-one-out stability) these methods are guaranteed to have.
 \end{abstract}
 
 \textbf{Some fixed notation:} Given a (finite) point cloud $X$ with $|X|=n$, let $\mu_X$ denote the empirical probability measure with support on $X$. That is, $\mu_X = \frac{1}{n}\sum_{x\in X}\delta_x$ where $\delta_x$ denotes the Dirac measure centred at $x$. Similarly, let $\mu_{X_0}$ denote the empirical measure on $X_0 = X\setminus\{x_0\}$ for some arbitrary $x_0\in X$. 
@@ -104,7 +104,7 @@ d_I(\mathcal{M}(X), \mathcal{M}(X'))\leq d_{Pr}(\mu_X, \mu_{X'}).
 $$
 \end{thm}
 
-\todo[inline]{Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration.}
+\todo[inline]{\textbf{Todo:} Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration.}
 
 \subsection{The Wasserstein distance}
 The Wasserstein distance, also known as the Earth Mover's Distance, is a distance measure between probability measures. It can be used to compare the similarity between two distributions, with smaller values indicating greater similarity. Some methods proposed in TDA for dealing with noise and outliers gives guarantees in terms of the Wasserstein distance. For two probability measures $\mu$ and $\eta$ on $Y=\R^d$, we define the \textit{$p$-Wasserstein distance} between $\mu$ and $\nu$ to be
@@ -158,7 +158,7 @@ d_B(\operatorname{Dgm}(d_{\mu_X,m}), \operatorname{Dgm}(d_{\mu_{X_0},m})) \leq \
 $$
 
 \textbf{Approximation via a weighted Čech (or Rips) complex}
-\todo[inline]{Write something about stability in case of the complex used to approximate DTM. See \autocite{Anai2018}. There are also some stability results wrt. the Wasserstein distance in \autocite{Anai2018}.}
+\todo[inline]{\textbf{Todo:} Write something about stability in case of the complex used to approximate DTM. See \autocite{Anai2018}. There are also some stability results wrt. the Wasserstein distance in \autocite{Anai2018}.}
 Computing the sublevel set homology of $d_{\mu, m}$ in practice is difficult. In \autocite{Hoefgeest2022} the authors propose a way to approximate the sublevel set homology by using weighted complexes.
 
 \subsubsection{Christoffel polynomials \autocite{Hoefgeest2022}}
