@@ -72,6 +72,5 @@ krebs2019asymptotic	refs.bib	/^@misc{krebs2019asymptotic,$/;"	n
 lem	main.tex	/^\\newtheorem{lem}{Lemma}[thm]$/;"	t
 prop	main.tex	/^\\newtheorem{prop}{Proposition}[thm]$/;"	t
 rem	main.tex	/^\\newtheorem{rem}{Remark}[thm]$/;"	t
-requests	main.run.xml	/^<!DOCTYPE requests [$/;"	r
 schenckalgebraic	refs.bib	/^@article{schenckalgebraic,$/;"	a
 thm	main.tex	/^\\newtheorem{thm}{Theorem}[section]$/;"	t
