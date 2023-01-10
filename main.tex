@@ -86,6 +86,29 @@ Let $Y$ be a metric space, and consider a function $V$ taking a finite subset $X
 
 For $1$-parameter persistent homology, we can take $d$ to be the usual interleaving distance $d_I$ between persistence modules. By the isometry theorem of \autocite{Bauer2015}, this distance agrees with the bottleneck distance between barcodes/persistence diagrams. The interleaving distance extends to $2$-parameter persistence modules which allows us to talk about uniform stability in the $2$-parameter setting as well. In practice, one does not necessarily prove stability directly on the algebraic level of persistence modules, but rather on the level of (bi-)filtrations of topological spaces or simplicial complexes.
 
+\begin{rem}
+The following three observations follows readily from the triangle inequality:
+\begin{enumerate}
+	\item \textbf{Removal of multiple points:} Let $X_k=X\setminus\{x_0, x_1,\ldots x_k\}$ for some  $x_0,x_1,\ldots,x_k\in X$. If $V$ is uniformly stable, then $d\left(V_X, V_{X_k}\right)$ is also bounded by some $\beta(n)\in\mathcal{O}(n^{-1})$.
+	\item \textbf{Replacing a point:} If $X'=(X\setminus\{x_0\})\cup\{x'\}$ for some $x'\in Y$, then $d\left(V_X, V_{X'}\right)$ is also bounded by some $\beta(n)\in\mathcal{O}(n^{-1})$.
+	\item \textbf{Interleavings and stability (?) :} If $V$ and $W$ are $\epsilon$-interleaved and $V$ is uniformly stable with respect to the interleaving distance $d_I$, then $d_I\left(W_{X}, W_{X_0}\right)\leq2\epsilon+\beta(n)$.
+\end{enumerate}
+\end{rem}
+\begin{proof}\,
+	\begin{enumerate}
+		\item By the triangle inequality and uniform stability of $V$, we have that $$d(V_X, V_{X_k})\leq d(V_{X}, V_{X_{k-1}})+d(V_{X_{k-1}}, V_{X_{k}})\leq d(V_{X}, V_{X_{k-1}})+\beta(n),$$ so the claim follows by induction.
+		\item Since $X_0=X'\setminus\{x'\}$, it follows that
+		\begin{align*}
+			d(V_X,V_{X'})&\leq d(V_X,V_{X_0})+d(V_{X'\setminus\{x'\}},V_{X'})\leq2\beta(n).%\max\left\{\beta(n),\,\beta'(n)\right\}.
+		\end{align*}
+		\item From the assumptions we have $d_I(V_X, V_{X_0}) \leq \beta(n)\in\mathcal{O}(n^{-1})$ and $d_I(V_Z, W_Z)\leq\epsilon$ for all $Z$. Using the triangle inequality, we have
+		\begin{align*}
+			d_I(W_X, W_{X_0}) &\leq d_I(W_X, V_X) + d_I(V_X, W_{X_0})\\
+			&\leq \epsilon + d_I(V_X, V_{X_0})) + d_I(V_{X_0}, W_{X_0})\leq 2\epsilon + \beta(n).
+		\end{align*}
+	\end{enumerate}
+\end{proof}
+
 \subsection{The multicover bifiltration and the Prohorov distance}
 The \textit{offset filtration} $O(X)$ of a point cloud $X$ is a filtered topological space given in filtration degree $r>0$ as the union of all balls of radius $r$ centred at the points in $X$. Taking the nerve of this collection of balls of radius $r$, we get the usual Čech filtration. The multicover bifiltration $\mathcal{M}(X)$ is a $2$-parameter extension of the offset filtration which is sensitive to density. Given a metric measure space $(Y,\eta_Y)$, the \textit{measure bifiltration $\mathcal{B}(Y)$} is given in filtration degree $(k,r)$ by $$\mathcal{B}(Y)_{(k,r)}=\{y\in Y\mid\eta_Y(B(y,r))\geq k\}.$$
 For a point cloud $X\subseteq\R^d$, the \textit{unormalized multicover bifiltration $\mathcal{M}^u(X)$} of $X$ is then defined as $\mathcal{M}^u(X)=\mathcal{B}(\hat{\nu}_X)$ where $\hat{\nu}_X$ is the counting measure on $X$ defined as $\hat{\nu}_X(A)=|A\cap X|$. In other words, $\mathcal{M}^u(X)_{(k,r)}$ consists of all $y\in \R^d$ such that the ball centred at $y$ of radius $r$ contains at least $k$ distinct points $x$ from $X$. The \textit{(normalized) multicover filtration $\mathcal{M}(X)$} is defined similarly by replacing $\hat{\nu}_X$ with the empirical probability measure $\nu_X(A)=|A\cap X|/|X|$. This normalizes the first parameter $k$ by the number of points in $X$.
@@ -104,7 +127,7 @@ d_I(\mathcal{M}(X), \mathcal{M}(X'))\leq d_{Pr}(\mu_X, \mu_{X'}).
 $$
 \end{thm}
 
-\todo[inline]{\textbf{Todo:} Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration.}
+\todo[inline]{\textbf{Todo:} Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration. The paper \autocite{Rolle22} an example exploring stability of degree-Rips on an annulus with outliers.}
 
 \subsection{The Wasserstein distance}
 The Wasserstein distance, also known as the Earth Mover's Distance, is a distance measure between probability measures. It can be used to compare the similarity between two distributions, with smaller values indicating greater similarity. Some methods proposed in TDA for dealing with noise and outliers gives guarantees in terms of the Wasserstein distance. For two probability measures $\mu$ and $\eta$ on $Y=\R^d$, we define the \textit{$p$-Wasserstein distance} between $\mu$ and $\nu$ to be
@@ -178,6 +201,7 @@ The following stability result is established in \autocite{Hoefgeest2022}:
 	whenever $C_X\cdot d_W(\mu_X, \mu_Y)\leq 1$. Here $C_X = 2C_{d,k}\Vert P_k^{\mu_X}\Vert_\infty$ where $C_{d,k} = 4\binom{d+k}{k}k^2$.
 \end{prop}
 
+Consider $X$ and $X_0$ with their empirical measures $\mu_X$ and $\mu_{X_0}$, respectively. Since $\operatorname{diam}[-1,1]^d = 2\sqrt{d}$ we have the upper bound $\log\left(2n^{-1}\sqrt{d}C_X+1\right)$ for the bottleneck distance.
 
 
 \subsubsection{Kernel density estimation}
