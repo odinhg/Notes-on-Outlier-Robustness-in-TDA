@@ -2,6 +2,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+%\usepackage[showframe]{geometry}
+
 \usepackage[
 backend=bibtex,
 sorting=ynt
@@ -74,6 +76,75 @@ sorting=ynt
 
 %We consider two distance functions on probability measures. Namely, the $p$-Wasserstein distance $W_p$ and the Prohorov distance $d_{Pr}$.
 
+\section{Hausdorff distance and outliers}
+Stability in topological data analysis often refers to the robustness of topological features with respect to small perturbations in the data. We will refer to this type of stability as \textit{classical stability}. However, classical stability is not sufficient to provide robustness against outliers. Given two subsets $A$ and $B$ of a metric space $(Y,d)$, the \textit{Hausdorff distance between $A$ and $B$}, denoted $d_H(A,B)$ is defined as
+$$
+d_H(A,B) = \inf\{\epsilon\geq0\mid A\subseteq B^\epsilon\text{ and }B\subseteq A^\epsilon\}
+$$
+where $X^\epsilon = \{y\in Y\mid d(y,x)\leq\epsilon\text{ for some }x\in X\}$ is the $\epsilon$-thickening of $X$ with respect to $d$. \Cref{fig:thickening_of_torus} illustrates the thickening of a point cloud sampled uniformly from the $2$-torus embedded in $\R^3$.
+
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{cccccc}
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_1.png}} &
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_2.png}} &
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_3.png}} &
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_4.png}} &
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_5.png}} &
+		\subfloat{\includegraphics[width = 0.650in]{figs/thick_torus_6.png}}
+	\end{tabular}
+	\caption{The $\epsilon$-thickening of a point cloud sampled from a $2$-dimensional torus. Here $\epsilon$ increases as we go from left to right.}\label{fig:thickening_of_torus}
+\end{figure}
+
+For a point $y\in Y$ and a subset $X\subseteq Y$ we write $d(y,X)=\inf_{x\in X} d(y,x)$ and $d(-,X)$ for the function $y\mapsto d(y,X)$. The Hausdorff distance can then be written in the following two forms equivalent to the above definition:
+$$
+d_H(A,B) = \max\left\{\sup_{a\in A}d(a,B), \sup_{b\in B}d(b,A)\right\} = \Vert d(-,A) - d(-, B)\Vert_\infty.
+$$
+
+Given a function $f\colon Y\to\R$, we denote by $\operatorname{Dgm}(f)$ the persistence diagram of the sublevel sets of $f$. The persistence diagram $\operatorname{Dgm}(f)$ encodes the birth and death times of generators of $H_k(f^{-1}(-\infty, t])$ for all values of $t\in\R$ and integers $k\geq 0$. In other words, $\operatorname{Dgm}(f)$ records the topological features of the sublevels sets of $f$ that persists when we vary $t$. There is a correspondence between persistence diagrams and what we call barcodes. There is a subtle difference in that barcodes contains information about whether or not the persistence intervals includes its endpoints. This difference can be important but in our case where we consider the homology of sublevel sets it does not matter so we view persistence diagrams and barcodes as representations of the same thing. Moreover, by the decomposition theorem in \autocite{Crawley2012}, every persistence module (of finite type) is completely characterized (up to isomorphism) by its corresponding barcode. The following result makes stability with respect to perturbation of the input data (or functions) precise:
+\begin{prop}[Classical stability. See \autocite{cohen2005stability} and \autocite{Chazal2012}]
+	Let $f,g\colon Y\to\R$ be continuous and tame\footnote{A function $f\colon Y\to\R$ is said to be \textit{tame} if the homology groups of its sublevel sets are finite in all degrees and $f$ has a finite number of homological critical values. See \autocite{cohen2005stability} for precise definitions.} functions with $X$ triangulable. Then $d_I(\operatorname{Dgm}(f), \operatorname{Dgm}(g))\leq\Vert f-g\Vert_\infty$.
+\end{prop}
+
+Now, for a point cloud $X\subseteq Y$, consider the distance function $f=d(-,X)$ and observe that for any $t\geq 0$, we have
+$$
+X^t := f^{-1}(-\infty, t] = \left\{y\in Y\mid\exists x\in X\text{ s.t. }d(x,y)\leq t\right\} = \bigcup_{x\in X}B(x,t).
+$$
+In other words, the $t$-sublevel set of $f$ is the $t$-thickening of $X$. Since $X^t\subseteq X^s$ for $t\leq s$, we obtain a filtered topological space $\left\{X^t\right\}_{t\geq 0}$ called the \textit{Čech filtration} of $X$. Given a cover $\mathcal{U}=\{U_i\}_{i\in I}$ of a topological space $Z$, we define the \textit{nerve of $\mathcal{U}$}, denoted $\mathcal{N}(\mathcal{U})$, to be the simplicial complex with vertex set $I$ defined by
+$$
+\sigma = \{i_0, i_1, \ldots, i_k\}\in\mathcal{N}(\mathcal{U})\iff \bigcap_{i\in\sigma}\neq\emptyset
+$$
+If for all finite non-empty $J\subseteq I$, the intersection $\bigcap_{i\in J} U_i$ is non-empty, the \textit{nerve theorem} states that $\mathcal{N}(\mathcal{U})$ is homotopy equivalent to $Z=\bigcup_{i\in I}U_i$. The family $\left\{B(x,t)\right\}_{x\in X}$ defines a cover of $X^t$ for every $t\geq 0$. Taking the nerve of the cover $\left\{B(x,t)\right\}_{x\in X}$, we obtain a simplicial complex $\operatorname{\text{\v{C}ech}}_t(X)$ with vertex set $X$. Applying this construction for different values of $t$, we get a filtered simplicial complex $\operatorname{\text{\v{C}ech}}(X) =\left\{ \operatorname{\text{\v{C}ech}}_t(X)\right\}_{t\geq 0}$ called the \textit{Čech complex of $X$}. By the nerve theorem, we have that the Čech filtration and the Čech complex of $X$ are homotopy equivalent, and hence they have isomorphic persistent homology modules. If we let $\operatorname{Dgm}^{\text{Č}}(X)$ denote the persistence diagram corresponding to the persistent homology of $\operatorname{\text{\v{C}ech}}(X)$, the classical stability theorem can now be written as 
+$$
+d_I(\operatorname{Dgm}^{\text{Č}}(X), \operatorname{Dgm}^{\text{Č}}(Y))\leq\Vert d(-,X) - d(-, Y)\Vert_\infty = d_H(X,Y).
+$$
+We now consider an simple example to demonstrate the above construction's sensitivity to outliers. 
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{ccc}
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/0_point_cloud.png}}&
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/1_point_cloud.png}}&
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/3_point_cloud.png}}\\
+		$X_0$ & $X_1$ & $X_2$
+	\end{tabular}
+	\caption{Three point clouds resembling a circle in the plane. The point cloud $X_0$ consists of points sampled uniformly from $S^1$, whereas $X_1$ is a slightly perturbed version of $X_0$, and $X_2$ is $X_0$ with a small number of outliers added.}\label{fig:clean_perturbed_noisy_circles}
+\end{figure}
+The Hausdorff distance between $X_0$ and $X_1$ is small, whereas $d_H(X_0, X_2)$ is large in comparison. \Cref{fig:clean_perturbed_noisy_circles_pers_diagrams} shows the corresponding persistence diagrams. As expected by the classical stability theorem, the diagrams corresponding to $X_0$ and $X_1$ are similar and both captures the homology of the underlying circle. However, the diagram of $X_2$ exhibits a lot of noise and it is not possible to infer the topology of a circle from the diagram.
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{ccc}
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/0_diagram.png}}&
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/1_diagram.png}}&
+		\subfloat{\includegraphics[width = 1.4in, height = 1.4in]{figs/3_diagram.png}}\\
+		$\operatorname{Dgm}^{\text{Č}}(X_0)$ & $\operatorname{Dgm}^{\text{Č}}(X_1)$ & $\operatorname{Dgm}^{\text{Č}}(X_2)$
+	\end{tabular}
+	\caption{Three point clouds resembling a circle in the plane. The point cloud $X_0$ consists of points sampled uniformly from $S^1$, whereas $X_1$ is a slightly perturbed version of $X_0$, and $X_2$ is $X_0$ with a small number of outliers added.}\label{fig:clean_perturbed_noisy_circles_pers_diagrams}
+\end{figure}
+
+\subsubsection{Previous work}
+\todo[inline]{What have been done to make PH robust against outliers? Specifically, density based methods. Constructions that takes the density in local neighbourhoods of $X$ into consideration. Potential problems: (1) Computability in practice. (2) Additional parameters for which there is no obvious way to pick the best value.}
+
+
 \section{Uniform stability}
 Let $Y$ be a metric space, and consider a function $V$ taking a finite subset $X\subseteq Y$ to a persistence module $V_X$. We introduce the notion of uniform stability for such functions with inspiration from learning theory (cf. \cite{bousquet2002stability}). If $X\subseteq Y$ is a point cloud and $x_0\in X$, we fix the notation $X_0 = X\setminus\{x_0\}$. The intuition behind uniform stability is that, given enough samples, the difference between $V_X$ and $V_{X_0}$ should be very small.
 
@@ -84,7 +155,7 @@ Let $Y$ be a metric space, and consider a function $V$ taking a finite subset $X
 	\end{equation}
 \end{defn}
 
-For $1$-parameter persistent homology, we can take $d$ to be the usual interleaving distance $d_I$ between persistence modules. By the isometry theorem of \autocite{Bauer2015}, this distance agrees with the bottleneck distance between barcodes/persistence diagrams. The interleaving distance extends to $2$-parameter persistence modules which allows us to talk about uniform stability in the $2$-parameter setting as well. In practice, one does not necessarily prove stability directly on the algebraic level of persistence modules, but rather on the level of (bi-)filtrations of topological spaces or simplicial complexes.
+%For $1$-parameter persistent homology, we can take $d$ to be the usual interleaving distance $d_I$ between persistence modules. By the isometry theorem of \autocite{Bauer2015}, this distance agrees with the bottleneck distance between barcodes/persistence diagrams. The interleaving distance extends to $2$-parameter persistence modules which allows us to talk about uniform stability in the $2$-parameter setting as well. In practice, one does not necessarily prove stability directly on the algebraic level of persistence modules, but rather on the level of (bi-)filtrations of topological spaces or simplicial complexes.
 
 \begin{rem}
 The following three observations follows readily from the triangle inequality:
@@ -128,6 +199,10 @@ $$
 \end{thm}
 
 \todo[inline]{\textbf{Todo:} Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration. The paper \autocite{Rolle22} an example exploring stability of degree-Rips on an annulus with outliers.}
+
+\begin{ex}
+	The Hausdorff distance between two point clouds is \textit{not} bounded below by the Prohorov distance between their associated empirical measures. In other words, stability with respect to the Prohorov distance does not in general imply stability with respect to the Hausdorff distance. To see this, consider the following simple example: Given any $\epsilon\in(0,\frac{1}{2})$, let $X=\{x,y\}$ such that $d(x,y)>1$ and let $X'$ be the union of $X$ and a collection of points $\{x_1, x_2,\ldots,x_N\}$ with all $x_i\in B(y,\epsilon)$. Then, clearly the Hausdorff distance $d_H(X,X')\leq\epsilon$. Suppose that $\delta = d_{Pr}(\mu_X, \mu_{X'})\leq\epsilon$. Then for $A=\{x\}$ we have $A^\delta=A$ so by the definition of the Prohorov distance the inequality $\mu_X(A)\leq\mu_{X'}(A^\delta)+\delta$ holds. This implies that $\frac{N+1}{N+2}\leq\delta\leq\epsilon$ which is absurd since $\epsilon<\frac{1}{2}$. Hence, we must have that $d_{Pr}(\mu_X, \mu_{X'})>d_H(X,X')$.
+\end{ex}
 
 \subsection{The Wasserstein distance}
 The Wasserstein distance, also known as the Earth Mover's Distance, is a distance measure between probability measures. It can be used to compare the similarity between two distributions, with smaller values indicating greater similarity. Some methods proposed in TDA for dealing with noise and outliers gives guarantees in terms of the Wasserstein distance. For two probability measures $\mu$ and $\eta$ on $Y=\R^d$, we define the \textit{$p$-Wasserstein distance} between $\mu$ and $\nu$ to be
