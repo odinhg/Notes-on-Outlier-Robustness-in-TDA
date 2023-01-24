@@ -21,6 +21,9 @@ sorting=ynt
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{tabularx}
+\usepackage{array}
+\setlength\extrarowheight{2pt} % or whatever amount is appropriate
 \usepackage{hyperref}
 \usepackage[capitalise, noabbrev]{cleveref}
 \usepackage{float}
@@ -110,14 +113,15 @@ Now, for a point cloud $X\subseteq Y$, consider the distance function $f=d(-,X)$
 $$
 X^t := f^{-1}(-\infty, t] = \left\{y\in Y\mid\exists x\in X\text{ s.t. }d(x,y)\leq t\right\} = \bigcup_{x\in X}B(x,t).
 $$
-In other words, the $t$-sublevel set of $f$ is the $t$-thickening of $X$. Since $X^t\subseteq X^s$ for $t\leq s$, we obtain a filtered topological space $\left\{X^t\right\}_{t\geq 0}$ called the \textit{Čech filtration} of $X$. Given a cover $\mathcal{U}=\{U_i\}_{i\in I}$ of a topological space $Z$, we define the \textit{nerve of $\mathcal{U}$}, denoted $\mathcal{N}(\mathcal{U})$, to be the simplicial complex with vertex set $I$ defined by
+In other words, the sublevels set of $f$ are the thickenings of $X$. Since $X^t\subseteq X^s$ for $t\leq s$, we obtain a filtered topological space $\left\{X^t\right\}_{t\geq 0}$ called the \textit{offset filtration} of $X$. Given a cover $\mathcal{U}=\{U_i\}_{i\in I}$ of a topological space $Z$, we define the \textit{nerve of $\mathcal{U}$}, denoted $\mathcal{N}(\mathcal{U})$, to be the simplicial complex with vertex set $I$ defined by
 $$
 \sigma = \{i_0, i_1, \ldots, i_k\}\in\mathcal{N}(\mathcal{U})\iff \bigcap_{i\in\sigma}\neq\emptyset
 $$
-If for all finite non-empty $J\subseteq I$, the intersection $\bigcap_{i\in J} U_i$ is non-empty, the \textit{nerve theorem} states that $\mathcal{N}(\mathcal{U})$ is homotopy equivalent to $Z=\bigcup_{i\in I}U_i$. The family $\left\{B(x,t)\right\}_{x\in X}$ defines a cover of $X^t$ for every $t\geq 0$. Taking the nerve of the cover $\left\{B(x,t)\right\}_{x\in X}$, we obtain a simplicial complex $\operatorname{\text{\v{C}ech}}_t(X)$ with vertex set $X$. Applying this construction for different values of $t$, we get a filtered simplicial complex $\operatorname{\text{\v{C}ech}}(X) =\left\{ \operatorname{\text{\v{C}ech}}_t(X)\right\}_{t\geq 0}$ called the \textit{Čech complex of $X$}. By the nerve theorem, we have that the Čech filtration and the Čech complex of $X$ are homotopy equivalent, and hence they have isomorphic persistent homology modules. If we let $\operatorname{Dgm}^{\text{Č}}(X)$ denote the persistence diagram corresponding to the persistent homology of $\operatorname{\text{\v{C}ech}}(X)$, the classical stability theorem can now be written as 
+If for all finite non-empty $J\subseteq I$, the intersection $\bigcap_{i\in J} U_i$ is non-empty, the \textit{nerve theorem} states that $\mathcal{N}(\mathcal{U})$ is homotopy equivalent to $Z=\bigcup_{i\in I}U_i$. The family $\left\{B(x,t)\right\}_{x\in X}$ defines a cover of $X^t$ for every $t\geq 0$. Taking the nerve of the cover $\left\{B(x,t)\right\}_{x\in X}$, we obtain a simplicial complex $\operatorname{\text{\v{C}ech}}_t(X)$ with vertex set $X$. Applying this construction for different values of $t$, we get a filtered simplicial complex $\operatorname{\text{\v{C}ech}}(X) =\left\{ \operatorname{\text{\v{C}ech}}_t(X)\right\}_{t\geq 0}$ called the \textit{Čech filtration of $X$}. By the nerve theorem, we have that the offset filtration and the Čech complex of $X$ are homotopy equivalent, and hence they have isomorphic persistent homology modules. If we let $\operatorname{Dgm}^{\text{Č}}(X)$ denote the persistence diagram corresponding to the persistent homology of $\operatorname{\text{\v{C}ech}}(X)$, the classical stability theorem can now be written as 
 $$
 d_I(\operatorname{Dgm}^{\text{Č}}(X), \operatorname{Dgm}^{\text{Č}}(Y))\leq\Vert d(-,X) - d(-, Y)\Vert_\infty = d_H(X,Y).
 $$
+\subsubsection{Perturbation- vs. outlier stability}
 We now consider an simple example to demonstrate the above construction's sensitivity to outliers. 
 \begin{figure}[H]
 	\centering
@@ -141,8 +145,11 @@ The Hausdorff distance between $X_0$ and $X_1$ is small, whereas $d_H(X_0, X_2)$
 	\caption{Three point clouds resembling a circle in the plane. The point cloud $X_0$ consists of points sampled uniformly from $S^1$, whereas $X_1$ is a slightly perturbed version of $X_0$, and $X_2$ is $X_0$ with a small number of outliers added.}\label{fig:clean_perturbed_noisy_circles_pers_diagrams}
 \end{figure}
 
+\subsubsection{The Vietoris-Rips complex}
+In general, the complexes in the Čech filtration is expensive to compute when the size of the input point cloud $X$ is big and when our input data is high dimensional. In practice, one often use an approximation to the Čech filtration called the \textit{Vietoris-Rips filtration}. Given a point cloud $X$, a $k$-simplex $\sigma=\{x_0, x_1, \ldots, x_k\}$ is included in the Vietoris-Rips complex of $X$ at filtration value $t\geq0$, denoted $\operatorname{Rips}_t(X)$, if and only if all pairwise distances $d(x_i, x_j)\leq t$. We can also define the Vietoris-Rips filtration as the sublevel set filtration of the diameter function $\sigma\mapsto \operatorname{diam}(\sigma)=\max_{x_i, x_j\in \sigma}\{d(x_i, x_j)\}$. For point clouds in $\R^d$, it is shown in \autocite{de2007coverage} that the Čech filtration and the Vietoris-Rips filtration are multiplicatively interleaved with interleaving constant $\sqrt{\frac{2d}{d+1}}$.
+
 \subsubsection{Previous work}
-\todo[inline]{What have been done to make PH robust against outliers? Specifically, density based methods. Constructions that takes the density in local neighbourhoods of $X$ into consideration. Potential problems: (1) Computability in practice. (2) Additional parameters for which there is no obvious way to pick the best value.}
+\todo[inline]{What have been done to make PH robust against outliers? Specifically, density based methods. Constructions that takes the density in local neighbourhoods of $X$ into consideration. Potential problems: (1) Computability in practice. (2) Additional parameters for which there is no obvious way to pick the best value. See Lesnick and Blumberg for a detailed review of previous methods (\autocite{Blumberg2020}).}
 
 
 \section{Uniform stability}
@@ -201,7 +208,7 @@ $$
 \todo[inline]{\textbf{Todo:} Look at the subdivision and degree bifiltrations and understand how these are related to the multicover bifiltration. The paper \autocite{Rolle22} an example exploring stability of degree-Rips on an annulus with outliers.}
 
 \begin{ex}
-	The Hausdorff distance between two point clouds is \textit{not} bounded below by the Prohorov distance between their associated empirical measures. In other words, stability with respect to the Prohorov distance does not in general imply stability with respect to the Hausdorff distance. To see this, consider the following simple example: Given any $\epsilon\in(0,\frac{1}{2})$, let $X=\{x,y\}$ such that $d(x,y)>1$ and let $X'$ be the union of $X$ and a collection of points $\{x_1, x_2,\ldots,x_N\}$ with all $x_i\in B(y,\epsilon)$. Then, clearly the Hausdorff distance $d_H(X,X')\leq\epsilon$. Suppose that $\delta = d_{Pr}(\mu_X, \mu_{X'})\leq\epsilon$. Then for $A=\{x\}$ we have $A^\delta=A$ so by the definition of the Prohorov distance the inequality $\mu_X(A)\leq\mu_{X'}(A^\delta)+\delta$ holds. This implies that $\frac{N+1}{N+2}\leq\delta\leq\epsilon$ which is absurd since $\epsilon<\frac{1}{2}$. Hence, we must have that $d_{Pr}(\mu_X, \mu_{X'})>d_H(X,X')$.
+	The Hausdorff distance between two point clouds is \textit{not} bounded below by the Prohorov distance between their associated empirical measures. In other words, stability with respect to the Prohorov distance does not in general imply stability with respect to the Hausdorff distance. To see this, consider the following simple example: Given any $\epsilon\in(0,\frac{1}{2})$, let $X=\{x,y\}$ such that $d(x,y)>1$ and let $X'$ be the union of $X$ and a collection of points $\{x_1, x_2,\ldots,x_N\}$ with all $x_i\in B(y,\epsilon)$. Then, clearly the Hausdorff distance $d_H(X,X')\leq\epsilon$. Suppose that $\delta = d_{Pr}(\mu_X, \mu_{X'})\leq\epsilon$. Then for $A=\{x\}$ we have $A^\delta=A$ so by the definition of the Prohorov distance the inequality $\mu_X(A)\leq\mu_{X'}(A^\delta)+\delta$ holds. This implies that $\frac{N+1}{N+2}\leq\delta\leq\epsilon$ which cannot be true since $\epsilon<\frac{1}{2}$. Hence, we must have that $d_{Pr}(\mu_X, \mu_{X'})>d_H(X,X')$.
 \end{ex}
 
 \subsection{The Wasserstein distance}
@@ -235,11 +242,13 @@ W_p(\mu_X, \mu_{X_0})&\leq \left(\frac{1}{n(n-1)}\sum_{x\in X_0}\Vert x_0-x\Vert
 
 Assuming that the diameter of $X$ does not depend on $|X|$, the above inequality implies that the $1$-Wasserstein distance between $\mu_X$ and $\mu_{X_0}$ is $\mathcal{O}(n^{-1})$.
 
+\todo[inline]{Section 5 in \autocite{Panaretos_2019} says something about computing/approximating the Wasserstein distance for discrete measures.}
+
 \subsubsection{The distance to a measure (\autocite{Buchet2013})}
-For a probability measure $\mu$ on a metric space $Y$ and a mass parameter $m\in(0,1]$, define the function $\delta_{m,\mu}\colon\R^d\to\R_{>0}$ by sending a point $y$ in $\R^d$ to the real number $\inf\{r>0\mid\mu(\bar{B}(y,r))>m\}$. Intuitively, $\delta_{m,\mu}$ describes how large a disk around $y$ we have to consider to capture at least $m$ mass as defined by $\mu$. Using $\delta$, we define \textit{the distance $d_{\mu,m}$ to measure $\mu$} as
+For a probability measure $\mu$ on a metric space $Y$ and a mass parameter $m\in(0,1]$, define the function $\delta_{\mu, m}\colon\R^d\to\R_{>0}$ by sending a point $y$ in $\R^d$ to the real number $\inf\{r>0\mid\mu(\bar{B}(y,r))>m\}$. Intuitively, $\delta_{m,\mu}$ describes how large a disk around $y$ we have to consider to capture at least $m$ mass as defined by $\mu$. Using $\delta$, we define \textit{the distance $d_{\mu,m}$ to measure $\mu$} as
 \begin{align*}
 	d_{\mu,m}\colon\R^d&\to\R_{>0}\\
-	y&\mapsto\sqrt{\frac{1}{m}\int_0^m\delta_{mu,l}(x)^2dl}.
+	y&\mapsto\sqrt{\frac{1}{m}\int_0^m\delta_{\mu,l}(y)^2 dl}.
 \end{align*}
 
 Let $\operatorname{Dgm}(d_{\mu,m})$ denote the persistence diagram corresponding to the sublevel set homology of $d_{\mu,m}$. In \autocite{Buchet2013}, the following Wasserstein stability result is established for the distance to a measure function:
@@ -297,7 +306,7 @@ Given a kernel $g$ centred in $0$, we denote by $g_x$ the shifted kernel given b
 		f_X - f_{X_0} &= \frac{1}{n}g_{x_0} -\frac{1}{n(n-1)}\sum_{x\in X_0}g_x
 		= \frac{1}{n}\left(g_{x_0} - f_{X_0}\right). \\
 	\end{align*}
-	Consequently, we have that $\Vert f_X - f_{X_0}\Vert_\infty\in\mathcal{O}(n^{-1})$ and hence uniform stability follows from classical stability of persistence diagrams (cf. \autocite{cohen2005stability}).
+	Consequently, we have that $\Vert f_X - f_{X_0}\Vert_\infty\in\mathcal{O}(n^{-1})$ and uniform stability follows from classical stability of persistence diagrams (cf. \autocite{cohen2005stability}).
 \end{proof}
 
 \textbf{A grid based approach to computing the sublevel set homology}
@@ -323,6 +332,99 @@ The following proposition gives an upper bound on the error of this approximatio
 \begin{idea}
 	Can we first use a grid, and then apply some sparsification method (with approximation guarantees) to reduce the number of vertices?
 \end{idea}
+
+\subsubsection{The relationship between the multicover bifiltration and kernel density estimates}
+The multicover bifiltration is given in degree $(r,k)$ as
+$$
+\operatorname{Cov}_{r,k}(X) = \left\{y\in\R^d\mid\Vert y-x\Vert\leq r\text{ for at least $k$ distinct $x\in X$}\right\}.
+$$
+Now, consider the uniform kernel (also called the disk kernel or the boxcar kernel) $K\colon\R\to\R$ defined as $K(y)=\frac{1}{2}$ if $\vert y\vert\leq1$ and $K(y)=0$ otherwise. Given a bandwidth parameter $r$, we define the kernel density estimator with kernel $K$ to be function $f_{X,r}\colon\R^d\to\R$ mapping $y\mapsto\frac{1}{n}\sum_{x\in X}K\left(\frac{\Vert x-y\Vert}{r}\right)$. The image of $f_{X,r}$ is precisely the set $\left\{\frac{k}{n}\right\}_{0\leq k\leq n}\subset[0,1]$. It is straightforward to see that the sublevel set $f_{X,r}^{-1}\left[\frac{k}{n},\infty\right)$ of this density estimator is exactly the subspace $\operatorname{Cov}_{r,k}(X)$. Hence, we can view the multicover bifiltration as the superlevel sets of a KDE where we include the bandwidth as one of the persistence parameters.
+
+\subsubsection{Kernel distance to a measure}
+In \autocite{Phillips2013}, reconstruction properties and robustness of the kernel distance and kernel density estimates is shown. In this subsection, we follow the notation of \autocite{Phillips2013}. A \textit{kernel} is a function $K\colon\R^d\times\R^d\to\posreals$ which takes high values on "similar" pair of points. For example, the Gaussian kernel defined by $K(p,x)=\sigma^2\exp(-\frac{1}{2\sigma^2}\Vert p-x\Vert^2)$ (which is a scaled normal distribution with mean $p$). Given a point cloud $P\subset\R^d$, the \textit{kernel density estimate} is defined as $\operatorname{KDE}_P(x) = \frac{1}{|P|}\sum_{p\in P}K(p,x)$. Now, given two point clouds $P$ and $Q$, we define a similarity measure between them by letting $\kappa(P,Q)=\frac{1}{|P| |Q|}\sum_{p\in P}\sum_{q\in Q}K(p,q)$ and define the \textit{kernel distance} between $P$ and $Q$ (with respect to the kernel $K$) to be 
+$$
+D_K(P,Q) = \sqrt{\kappa(P,P)+\kappa(Q,Q)-2\kappa(P,Q)}.
+$$
+
+The similarity function $\kappa$ can be generalized to a similarity function of measures. Given measures $\mu$ and $\nu$, define $\kappa(\mu,\nu)=\int_{(p,q)\in\R^d\times\R^d}Kdm_{\mu,\nu}(p,q)$ where $m_{\mu,\nu}=\mu\otimes\nu$ is the product measure of $\mu$ and $\nu$. Consequently, we can define the kernel distance between measures by letting $D_K(\mu,\nu) = \sqrt{\kappa(\mu,\mu)+\kappa(\nu,\nu)-2\kappa(\mu,\nu)}$. If $\mu_P$ and $\mu_Q$ denote the empirical measures of $P$ and $Q$, then $D_K(\mu_P, \mu_Q) = D_K(P,Q)$.
+
+\todo[inline]{Can we find a upper bound on $D_K(X,X_0) = D_K(\mu_X, \mu_{X_0})$? If so, is this bound $\mathcal{O}(n^{-1})$?}
+
+\subsection{An overview of known stability results}
+Let $X$ be a finte point cloud in $\R^d$ with $|X|=n$ and let $X_0 = X\setminus\{x_0\}$ for some arbitrary $x_0\in X$. Let $\mu_X$ and $\mu_{X_0}$ denote the empirical uniform measures on $X$ and $X_0$, respectively.
+
+\subsubsection{Distance-to-measure (DTM)}
+\begin{tabularx}{\textwidth}{|X|}
+	\hline
+	\textbf{Distance function $f\colon\R^d\to\R$}  \\ \hline
+	$
+	f(y) = d_{\mu, m}(y) = \sqrt{\frac{1}{m}\int_0^m\delta^2_{\mu,t}(y)dt}
+	\text{ where }
+	\delta_{\mu, t}(y) = \inf\{r\geq0\mid\mu(\bar{B}(y,r))\geq t\}
+	$
+	\\ \hline
+	\textbf{Known upper bound \autocite{Buchet2013}}  \\ \hline
+	$\Vert d_{\mu_X,m} - d_{\mu_{X_0},m}\Vert_\infty \leq \frac{1}{\sqrt{m}}W_2(\mu_X,\mu_{X_0})\leq \frac{1}{\sqrt{nm}}\operatorname{diam}(X)$
+	\\ \hline
+	\textbf{Fixed parameter(s)} \\ \hline
+	$m\in(0,1]$ : mass parameter
+	\\ \hline
+	\textbf{Notes}              \\ \hline
+	Approximations of the sublevel persistent homology of $d_{\mu_X, m}$ have been proposed in \autocite{Anai2018} using weighted complexes.
+	\\ \hline
+\end{tabularx}
+
+\subsubsection{Christoffel polynomials}
+\begin{tabularx}{\textwidth}{|X|}
+	\hline
+	\textbf{Distance function $f\colon\R^d\to\R$}  \\ \hline
+	$f = \log P_k^{\mu}$ where $P_k^{\mu}$ is the Christoffel polynomial of degree $k$ defined in terms of an orthonormal basis determined by the measure $\mu$. See \autocite{Hoefgeest2022} for details.
+	\\ \hline
+	\textbf{Known upper bound \autocite{Hoefgeest2022}}  \\ \hline
+	$\Vert\log P_k^{\mu_X}-\log P_k^{\mu_{X_0}}\Vert_\infty \leq \log(C\cdot W_1(\mu_X, \mu_{X_0}) + 1)\leq\log\left(\frac{2C\sqrt{d}}{n}+1\right)$
+	\\ \hline
+	\textbf{Fixed parameter(s)} \\ \hline
+	$k\in\mathbb{N}$ : polynomial degree
+	\\ \hline
+	\textbf{Notes}              \\ \hline
+	The constant $C$ is defined as $C=C_{d,k}\max\left\{\Vert P_k^{\mu_X}\Vert_\infty, \Vert P_k^{\mu_{X_0}}\Vert_\infty\right\}$ with $C_{d,k} = 4\binom{d+k}{k}k^2$ where $k$ is the polynomial degree and $d$ is the ambient dimension. When it comes to computing the sublevel set persistent homology of the Christoffel polynomials, the authors of \autocite{Hoefgeest2022} construct a grid on $[-1,1]^d$ to linearly approximate $P_k^{\mu_X}$ and then compute the lower-star filtration.
+	\\ \hline
+\end{tabularx}
+
+\subsubsection{Kernel density estimator (KDE)}
+\begin{tabularx}{\textwidth}{|X|}
+	\hline
+	\textbf{Distance function $f\colon\R^d\to\R$}  \\ \hline
+	$f(y)=\frac{1}{n}\sum_{x\in X}K\left(\frac{\Vert x-y \Vert}{h}\right)$ where $K\colon\R_{\geq0}\to\R_{\geq0}$ is a kernel function.
+	\\ \hline
+	\textbf{Known upper bound}  \\ \hline
+
+	\\ \hline
+	\textbf{Fixed parameter(s)} \\ \hline
+	$h>0$ : bandwidth
+	\\ \hline
+	\textbf{Notes}              \\ \hline
+	\\ \hline
+\end{tabularx}
+
+\subsubsection{Kernel distance}
+\begin{tabularx}{\textwidth}{|X|}
+	\hline
+	\textbf{Distance function $f\colon\R^d\to\R$}  \\ \hline
+	$f(y)=d_{\mu}^K(y) = D_K(\mu, y) = \sqrt{\kappa(\mu,\mu)+\kappa(y,y)-2\kappa(\mu,y)}$.
+	\\ \hline
+	\textbf{Known upper bound}  \\ \hline
+	$
+	\Vert d^K_{\mu_X}-d^K_{\mu_{X_0}}\Vert_\infty \leq D_K(\mu_X, \mu_{X_0}) \leq \text{To be computed!}
+	$
+	\\ \hline
+	\textbf{Fixed parameter(s)} \\ \hline
+	$\sigma>0$ : bandwidth
+	\\ \hline
+	\textbf{Notes}              \\ \hline
+	The sublevel sets of the kernel distance isomorphically maps to the superlevel sets of a kernel density estimate. Stability in terms of $D_K(X, X_0)$. It is shown that the kernel distance is distance-like and an approximation scheme involving weighted complexes (similar to the case of DTM) are used in the original paper.
+	\\ \hline
+\end{tabularx}
 
 \printbibliography
 \end{document}
