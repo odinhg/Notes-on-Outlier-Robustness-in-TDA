@@ -334,6 +334,7 @@ The following proposition gives an upper bound on the error of this approximatio
 \end{idea}
 
 \subsubsection{The relationship between the multicover bifiltration and kernel density estimates}
+
 The multicover bifiltration is given in degree $(r,k)$ as
 $$
 \operatorname{Cov}_{r,k}(X) = \left\{y\in\R^d\mid\Vert y-x\Vert\leq r\text{ for at least $k$ distinct $x\in X$}\right\}.
@@ -346,9 +347,22 @@ $$
 D_K(P,Q) = \sqrt{\kappa(P,P)+\kappa(Q,Q)-2\kappa(P,Q)}.
 $$
 
-The similarity function $\kappa$ can be generalized to a similarity function of measures. Given measures $\mu$ and $\nu$, define $\kappa(\mu,\nu)=\int_{(p,q)\in\R^d\times\R^d}Kdm_{\mu,\nu}(p,q)$ where $m_{\mu,\nu}=\mu\otimes\nu$ is the product measure of $\mu$ and $\nu$. Consequently, we can define the kernel distance between measures by letting $D_K(\mu,\nu) = \sqrt{\kappa(\mu,\mu)+\kappa(\nu,\nu)-2\kappa(\mu,\nu)}$. If $\mu_P$ and $\mu_Q$ denote the empirical measures of $P$ and $Q$, then $D_K(\mu_P, \mu_Q) = D_K(P,Q)$.
-
-\todo[inline]{Can we find a upper bound on $D_K(X,X_0) = D_K(\mu_X, \mu_{X_0})$? If so, is this bound $\mathcal{O}(n^{-1})$?}
+The similarity function $\kappa$ can be generalized to a similarity function of measures. Given measures $\mu$ and $\nu$, define $\kappa(\mu,\nu)=\int_{(p,q)\in\R^d\times\R^d}Kdm_{\mu,\nu}(p,q)$ where $m_{\mu,\nu}=\mu\otimes\nu$ is the product measure of $\mu$ and $\nu$. Consequently, we can define the kernel distance between measures by letting $D_K(\mu,\nu) = \sqrt{\kappa(\mu,\mu)+\kappa(\nu,\nu)-2\kappa(\mu,\nu)}$. If $\mu_P$ and $\mu_Q$ denote the empirical measures of $P$ and $Q$, then $D_K(\mu_P, \mu_Q) = D_K(P,Q)$. The \textit{kernel distance with respect to a measure $\mu$} is defined as $$d_\mu^K(y)=D_K(\mu,y)=\sqrt{\kappa(\mu,\mu)+\kappa(y,y)-2\kappa(\mu,y)}$$
+and enjoys the following stability property:
+$$
+\Vert d_\mu^K - d_\nu^K\Vert_\infty\leq D_K(\mu, \nu).
+$$
+For the empirical measures $\mu_X$ and $\mu_{X_0}$ we compute the square of the kernel distance to be
+\begin{align*}
+	D_K^2(\mu_X,\mu_{X_0}) &=  \kappa(X,X)+\kappa(X_0,X_0)-2\kappa(X,X_0)
+	\\ 
+	&= \frac{1}{n^2}\sum_{x\in X}\sum_{x'\in X}K(x,x') + \frac{1}{(n-1)^2}\sum_{x\in X_0}\sum_{x'\in X_0}K(x,x')\\&\qquad - \frac{2}{(n-1)n}\sum_{x\in X}\sum_{x'\in X_0}K(x,x')\\
+	&= \frac{1}{n^2}\left(K(x_0, x_0) + 2\sum_{x\in X_0}K(x,x_0)+\sum_{x\in X_0}\sum_{x'\in X_0}K(x,x')\right)\\
+	&\qquad+\frac{1}{(n-1)^2}\sum_{x\in X_0}\sum_{x'\in X_0}K(x,x')\\
+	&\qquad-\frac{2}{(n-1)n}\left(\sum_{x\in X_0}\sum_{x'\in X_0}K(x,x') + \sum_{x\in X_0}K(x,x_0)\right)\\
+	&= \frac{1}{n^2}\left(K(x_0,x_0) + \frac{2}{n-1}\sum_{x\in X_0}K(x,x_0) + \frac{1}{(n-1)^2}\sum_{x\in X_0}\sum_{x'\in X_0}K(x,x')\right)
+\end{align*}
+which shows that $D_K(\mu_X,\mu_{X_0})\in\mathcal{O}(n^{-1})$ and that the sublevel set homology of the kernel distance to the empirical measure $\mu_X$ is uniformly stable.
 
 \subsection{An overview of known stability results}
 Let $X$ be a finte point cloud in $\R^d$ with $|X|=n$ and let $X_0 = X\setminus\{x_0\}$ for some arbitrary $x_0\in X$. Let $\mu_X$ and $\mu_{X_0}$ denote the empirical uniform measures on $X$ and $X_0$, respectively.
@@ -415,7 +429,7 @@ Let $X$ be a finte point cloud in $\R^d$ with $|X|=n$ and let $X_0 = X\setminus\
 	\\ \hline
 	\textbf{Known upper bound}  \\ \hline
 	$
-	\Vert d^K_{\mu_X}-d^K_{\mu_{X_0}}\Vert_\infty \leq D_K(\mu_X, \mu_{X_0}) \leq \text{To be computed!}
+	\Vert d^K_{\mu_X}-d^K_{\mu_{X_0}}\Vert_\infty \leq D_K(\mu_X, \mu_{X_0}) \in\mathcal{O}(n^{-1})
 	$
 	\\ \hline
 	\textbf{Fixed parameter(s)} \\ \hline

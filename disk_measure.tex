@@ -1,0 +1,129 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+%\usepackage[showframe]{geometry}
+
+\usepackage[
+backend=bibtex,
+sorting=ynt
+]{biblatex}
+\addbibresource{refs.bib}
+
+\defbibheading{secbib}[\bibname]{%
+	\section*{#1}%
+	\markboth{#1}{#1}}
+
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{todonotes}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tabularx}
+\usepackage{array}
+\setlength\extrarowheight{2pt} % or whatever amount is appropriate
+\usepackage{hyperref}
+\usepackage[capitalise, noabbrev]{cleveref}
+\usepackage{float}
+\usepackage{mathbbol}
+%\usepackage{tikz-cd}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+
+\usepackage{newpxtext,newpxmath} % Should be the last package import
+
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{lem}{Lemma}[thm]
+\newtheorem{cor}{Corollary}[thm]
+\newtheorem{prop}{Proposition}[thm]
+\newtheorem{rem}{Remark}[thm]
+\newtheorem{ill}{Illustration}[thm]
+\newtheorem{ex}{Example}[thm]
+
+\newcommand{\conv}[1]{\ensuremath{\operatorname{conv}(#1)}}
+\newcommand{\posreals}{\ensuremath{\mathbb{R}_{>0}}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pers}{\mathcal{D}}
+
+\newenvironment{idea}{%
+	\begin{tcolorbox}[colback=green, breakable, sharp corners]
+		\textbf{Idea: }
+		\medskip
+		\begin{quote}
+			\centering
+		}{\end{quote}\medskip\end{tcolorbox}}
+
+
+\setlength\parindent{0pt}
+
+\linespread{1.5}
+
+\title{Draft: Distance to the disk measure}
+\begin{document}
+	\maketitle
+	\begin{abstract}
+		Given a point cloud, we consider the associated disk measure which is a thickening of the empirical measure. In particular, we aim to show uniform stability results related to the distance to the disk measure...
+	\end{abstract}
+
+	\section{Introduction}
+	\subsection{Background}
+	\begin{enumerate}
+		\item In \autocite{chazal2011geometric}, the authors introduce the distance to a measure. Better stability (Wasserstein stability) guarantees with respect to noise and outliers than the classical stability results for distance functions.
+		
+		\item In \autocite{Buchet2013} the authors propose an approximation scheme for approximating the sublevel sets of the distance to a measure function using power distances and weighted Čech (and Rips) complexes.
+		
+		\item They use this approximation scheme to compute the sublevel set homology of the distance to the empirical measure.
+		
+		\item A similar approach using weighted complexes and power distances have been used in \autocite{Phillips2013} for approximating the sublevel set homology of the kernel distance to a measure.
+	\end{enumerate}
+
+	\subsection{Goal}
+	\begin{enumerate}
+		\item We want to study kernel density estimators using the disk kernel which can be viewed as a thickening of the Dirac measure.
+		\item We then consider the measure induced by this KDE and the distance to this measure.
+		\item Letting the kernel bandwidth approach zero as the number of samples in the input point cloud grows, we want to show that this gives uniformly stable approximations of the sublevel sets of the distance to measure function.
+		\item We may also relate the disk KDE to the multicover bifiltration (\autocite{Blumberg2020}, \autocite{corbet2021}, \autocite{sheehy2012multicover} and \autocite{edelsbrunner2021multi}).
+	\end{enumerate}
+
+	\section{Background}
+	\subsection{Kernel density estimators}
+	We consider the \textit{disk kernel} $D_h\colon\R^d\times\R^d\to\R_{\geq0}$ with \textit{bandwidth parameter} $h\R_{>0}$ defined by
+	$$
+	(x,y)\mapsto 
+	\begin{cases} 
+		1 & \Vert x - y\Vert \leq h\text{ and} \\
+		0 & \text{otherwise.}
+	\end{cases}
+	$$
+	We then define the \textit{normalized disk kernel} $K_h\colon\R^d\times\R^d\to\R_{\geq0}$ by normalizing the disk kernel such $K_h(x,-)\colon\R^d\to\R_{\geq0}$ integrates to $1$ for all $x\in\R^d$. In other words, $K_h$ is defined as $K_h(x,y):=\frac{\Gamma(\frac{d}{2}+1)}{(h\sqrt{\pi})^d}D_h(x,y)$. Now, given a point cloud $X\subset\R^d$ with $|X|=n$, we define the \textit{disk kernel density estimator (DKDE) $f_{X,h}$ with bandwidth $h$} on $X$ as the weighted sum
+	$$
+	f_{X,h} = \frac{1}{n}\sum_{x\in X}K_h(x,-)\colon\R^d\to\R_{\geq0}.
+	$$
+	The induced \textit{disk measure on $X$} is then defined as the probability measure $\mu_{X,h}\colon A\to\int_A f_{X,h}(y)dy$. In other words, for a measurable set $A\subset\R^d$, we have
+	$$
+	\mu_{X,h}(A) = \frac{\Gamma(\frac{d}{2}+1)}{n(h\sqrt{\pi})^d}\sum_{x\in X}\operatorname{Vol}(A\cap\bar{B}(x,h)).
+	$$
+	Given any strictly monotonically function $\alpha\colon\mathbb{Z}_{>0}\to\R_{>0}$, we introduce the notation $\mu_{X,\alpha} = \mu_{X,\alpha(n)}$. Put differently, the bandwidth decrease as the number of samples in $X$ increase. For example, we could choose $\alpha(n)=\frac{c}{n}$ for some constant $c\in\R_{>0}$.
+	
+	\subsection{Distance to a measure}
+	Given a probability measure $\mu$ on a metric space $(M,d_M)$ and a mass parameter $m\in(0,1]$, define the \textit{distance $d_{\mu,m}\colon M\to\R_{\geq0}$ to the measure $\mu$} as
+	$$
+	d_{\mu,m}(y) = \sqrt{\frac{1}{m}\int_0^m\delta_{\mu, t}^2(y)dt}
+	$$
+	where $\delta_{\mu,t}\colon M\to\R_{\geq0}$ is defined as $\delta_{\mu,t}(y)=\inf\{r\geq0\mid\mu(\bar{B}(y,r))>t\}$ and $\bar{B}(y,r)=\{m\in M\mid d_M(y,m)\leq r\}$ is the closed ball centred at $y$ of radius $r$. The distance to the disk measure $d_{X,\alpha, m} := d_{\mu_{X,\alpha}, m}$ is then given by
+	$$
+	d_{X,\alpha, m}^2(y) = \frac{C(n,d)}{m}\int_0^m\inf\left\{r\geq 0\,\middle\vert\,\sum_{x\in X}\operatorname{Vol}(\bar{B}(y,r)\cap\bar{B}(x,\alpha(n)))\geq t\right\}^2 dt
+	$$
+	where $C(n,d)=\frac{\Gamma(\frac{d}{2}+1)}{n(\alpha(n)\sqrt{\pi})^d}$.
+	
+	\printbibliography
+	
+
+\end{document}
