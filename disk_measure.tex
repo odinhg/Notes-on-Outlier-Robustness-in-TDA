@@ -138,7 +138,11 @@ sorting=ynt
 		$$
 	\end{thm}
 
-	\todo[inline]{To establish uniform stability on the level of sublevel set homology, we need to find an upper bound of $W_2(\mu_{X,\alpha}, \mu_{X_0,\alpha})$ which is $\mathcal{O}(n^{-1})$. Maybe find an upper bound on the distance from each to a common measure $\nu$, then apply the triangle inequality for $W_2$?}
+	\subsubsection{Wasserstein stability for the disk measure}
+	Given a point cloud $X\subset\R^d$, we already know an upper bound on the Wasserstein distance $W_p(\mu_X, \mu_{X_0})$ between the empirical measures $\mu_X$ and $\mu_{X_0}$. Now, if we can find an upper bound on the distance $W_2(\mu_{X,\alpha}, \mu_X)$ between the disk measure and the empirical measure on $X$, then we can use the triangle inequality to obtain a bound on $W_2(\mu_{X,\alpha}, \mu_{X_0,\alpha})$. This will help us establish uniform stability for the distance to the disk measure.
+	
+	\todo[inline]{Find a transport plan (coupling) between $\mu_X$ and $\mu_{X,\alpha}$ providing an upper bound on $W_2$!}
+
 
 	\subsubsection{Approximating the sublevel sets of $d_{\mu,m}$}
  	Following the exposition given in \autocite{Buchet2013}, we see how the sublevel sets of $d_{\mu,m}$ can be approximated by the union of balls centred at each point in some sample $P$ of $\operatorname{Supp}(\mu)$. Given a subset $P$ of a metric space $(M, d_M)$ and a weight function $w\colon P\to\R$, we define the \textit{power distance} $p(x)\colon M\to\R_{\geq0}$ associated with $(P,w)$ by letting
@@ -150,7 +154,7 @@ sorting=ynt
  		\label{thm_power_distance_dtm_inequality}
  		If $d_H(P,\operatorname{Supp}(\mu))\leq\epsilon$, then $$\frac{1}{\sqrt{2}}d_{\mu,m}\leq d_{\mu,m}^P \leq \sqrt{5}(d_{\mu,m}+\epsilon).$$
  	\end{thm}
- 	For the empirical measure $\mu_X = \frac{1}{|X|}\sum_{x\in X}\delta_x$ on some point cloud $X$ one can choose $P=X$ (giving $\epsilon=0$ in \cref{thm_power_distance_dtm_inequality}) to obtain interleaving guarantees on the sublevel set filtrations of $d_{\mu_X,m}$ and $d_{\mu_X,m}^P$. In the case where $M=\R^d$ with the $L_2$-norm and $\mu=\mu_X$, the bounds can be slightly improved to $\frac{1}{\sqrt{2}}d_{\mu,m}\leq d_{\mu,m}^P \leq \sqrt{3}d_{\mu,m}$.
+ 	For the empirical measure $\mu_X = \frac{1}{|X|}\sum_{x\in X}\delta_x$ on some point cloud $X$ one can choose $P=X$ (giving $\epsilon=0$ in \cref{thm_power_distance_dtm_inequality}) to obtain interleaving guarantees on the sublevel set filtrations of $d_{\mu_X,m}$ and $d_{\mu_X,m}^P$. In the case where $M=\R^d$ with the $L_2$-norm and $\mu$ is the empirical measure $\mu_X$ on $X$, the bounds can be slightly improved to $\frac{1}{\sqrt{2}}d_{\mu,m}\leq d_{\mu,m}^P \leq \sqrt{3}d_{\mu,m}$.
 
 	\begin{ex}
 		Consider the distance $d_{X,\alpha, m}$ to the the disk measure $\mu_{X,\alpha}$ on $X$ with $|X|=n$. Then, $P=X$ is an $\alpha(n)$-sample of $\operatorname{Supp}(\mu_{X,\alpha})$ so we can apply \cref{thm_power_distance_dtm_inequality} to obtain the inequalities
@@ -160,6 +164,8 @@ sorting=ynt
 	\end{ex}
 
 	\todo[inline]{Can we hope for an additive interleaving instead of a multiplicative one?}
+
+	\todo[inline]{Define weighted Čech/Rips complexes and give approximation results.}
 
 	\printbibliography
 	
