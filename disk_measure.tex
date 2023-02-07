@@ -65,13 +65,12 @@ sorting=ynt
 
 \linespread{1.5}
 
-\title{Draft: Distance to the disk measure}
+\title{Draft: Distance to the measure induced by a uniform kernel density estimator.}
 \begin{document}
 	\maketitle
-	\begin{abstract}
-		Given a point cloud, we consider the associated disk measure which is a thickening of the empirical measure. In particular, we aim to show uniform stability results related to the distance to the disk measure...
-	\end{abstract}
-
+	
+	\todo[inline]{Big question: do we gain anything compared to just using the empirical measure?}
+	
 	\section{Introduction}
 	\subsection{Background}
 	\begin{enumerate}
@@ -113,16 +112,55 @@ sorting=ynt
 	Given any strictly monotonically function $\alpha\colon\mathbb{Z}_{>0}\to\R_{>0}$, we introduce the notation $\mu_{X,\alpha} = \mu_{X,\alpha(n)}$. Put differently, the bandwidth decrease as the number of samples in $X$ increase. For example, we could choose $\alpha(n)=\frac{c}{n}$ for some constant $c\in\R_{>0}$.
 	
 	\subsection{Distance to a measure}
-	Given a probability measure $\mu$ on a metric space $(M,d_M)$ and a mass parameter $m\in(0,1]$, define the \textit{distance $d_{\mu,m}\colon M\to\R_{\geq0}$ to the measure $\mu$} as
+	Given a probability measure $\mu$ on a metric space $(M,d_M)$ and a mass parameter $m\in(0,1]$, define the \textit{distance to the measure $\mu$}, denoted $d_{\mu,m}\colon M\to\R_{\geq0}$, as
 	$$
 	d_{\mu,m}(y) = \sqrt{\frac{1}{m}\int_0^m\delta_{\mu, t}^2(y)dt}
 	$$
-	where $\delta_{\mu,t}\colon M\to\R_{\geq0}$ is defined as $\delta_{\mu,t}(y)=\inf\{r\geq0\mid\mu(\bar{B}(y,r))>t\}$ and $\bar{B}(y,r)=\{m\in M\mid d_M(y,m)\leq r\}$ is the closed ball centred at $y$ of radius $r$. The distance to the disk measure $d_{X,\alpha, m} := d_{\mu_{X,\alpha}, m}$ is then given by
+	where $\delta_{\mu,t}\colon M\to\R_{\geq0}$ is defined as $\delta_{\mu,t}(y)=\inf\{r\geq0\mid\mu(\bar{B}(y,r))>t\}$ and $\bar{B}(y,r)=\{m\in M\mid d_M(y,m)\leq r\}$ is the closed ball centred at $y$ of radius $r$.
+	
+	\begin{ex}
+	The distance to the disk measure $d_{X,\alpha, m} := d_{\mu_{X,\alpha}, m}$ is then given by
 	$$
 	d_{X,\alpha, m}^2(y) = \frac{C(n,d)}{m}\int_0^m\inf\left\{r\geq 0\,\middle\vert\,\sum_{x\in X}\operatorname{Vol}(\bar{B}(y,r)\cap\bar{B}(x,\alpha(n)))\geq t\right\}^2 dt
 	$$
 	where $C(n,d)=\frac{\Gamma(\frac{d}{2}+1)}{n(\alpha(n)\sqrt{\pi})^d}$.
-	
+	\end{ex}
+
+	One of the most important properties of the distance to a measure function is the stability it enjoys with respect to the Wasserstein distance.
+	\begin{thm}[Theorem 3.1~and~3.3~in~\autocite{Buchet2013}]
+		Let $\mu$ and $\nu$ be probability measures on a metric space $M$ and let $m\in(0,1]$ be a mass parameter. Then,
+		$$
+		\Vert d_{\mu,m} - d_{\nu,m}\Vert_\infty\leq\frac{1}{\sqrt{m}}W_2(\mu, \nu).
+		$$
+		Moreover, if $M$ is triangulable, then $\operatorname{Dgm}(d_{\mu, m})$ and $\operatorname{Dgm}(d_{\nu, m})$ are well-defined and
+		$$
+		d_B(\operatorname{Dgm}(d_{\mu, m}), \operatorname{Dgm}(d_{\nu, m}))\leq\frac{1}{\sqrt{m}}W_2(\mu,\nu).
+		$$
+	\end{thm}
+
+	\todo[inline]{To establish uniform stability on the level of sublevel set homology, we need to find an upper bound of $W_2(\mu_{X,\alpha}, \mu_{X_0,\alpha})$ which is $\mathcal{O}(n^{-1})$. Maybe find an upper bound on the distance from each to a common measure $\nu$, then apply the triangle inequality for $W_2$?}
+
+	\subsubsection{Approximating the sublevel sets of $d_{\mu,m}$}
+ 	Following the exposition given in \autocite{Buchet2013}, we see how the sublevel sets of $d_{\mu,m}$ can be approximated by the union of balls centred at each point in some sample $P$ of $\operatorname{Supp}(\mu)$. Given a subset $P$ of a metric space $(M, d_M)$ and a weight function $w\colon P\to\R$, we define the \textit{power distance} $p(x)\colon M\to\R_{\geq0}$ associated with $(P,w)$ by letting
+ 	$$
+ 	p(x)=\sqrt{\min_{p\in P}\left(d_M(x,p)^2+w(p)^2\right)}.
+ 	$$
+ 	Let $\mu$ be a probability measure on a metric space $M$ and let $m\in(0,1]$. Given a subset $P\subseteq M$, define $d_{\mu,m}^P$ to be the power distance associated with $(P,d_{\mu,m})$. That is, $d_{\mu,m}^P=\sqrt{\min_{p\in P}\left(d_M(x,p)^2+d_{\mu,m}(p)^2\right)}$
+ 	\begin{thm}[Theorem~4.5~in~\autocite{Buchet2013}]
+ 		\label{thm_power_distance_dtm_inequality}
+ 		If $d_H(P,\operatorname{Supp}(\mu))\leq\epsilon$, then $$\frac{1}{\sqrt{2}}d_{\mu,m}\leq d_{\mu,m}^P \leq \sqrt{5}(d_{\mu,m}+\epsilon).$$
+ 	\end{thm}
+ 	For the empirical measure $\mu_X = \frac{1}{|X|}\sum_{x\in X}\delta_x$ on some point cloud $X$ one can choose $P=X$ (giving $\epsilon=0$ in \cref{thm_power_distance_dtm_inequality}) to obtain interleaving guarantees on the sublevel set filtrations of $d_{\mu_X,m}$ and $d_{\mu_X,m}^P$. In the case where $M=\R^d$ with the $L_2$-norm and $\mu=\mu_X$, the bounds can be slightly improved to $\frac{1}{\sqrt{2}}d_{\mu,m}\leq d_{\mu,m}^P \leq \sqrt{3}d_{\mu,m}$.
+
+	\begin{ex}
+		Consider the distance $d_{X,\alpha, m}$ to the the disk measure $\mu_{X,\alpha}$ on $X$ with $|X|=n$. Then, $P=X$ is an $\alpha(n)$-sample of $\operatorname{Supp}(\mu_{X,\alpha})$ so we can apply \cref{thm_power_distance_dtm_inequality} to obtain the inequalities
+		$$
+		\frac{1}{\sqrt{2}}d_{X,\alpha, m}\leq d_{X,\alpha, m}^P \leq \sqrt{5}(d_{X,\alpha, m}+\alpha(n)).
+		$$
+	\end{ex}
+
+	\todo[inline]{Can we hope for an additive interleaving instead of a multiplicative one?}
+
 	\printbibliography
 	
 
